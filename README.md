@@ -13,7 +13,7 @@ Simply run "make test" to do a simple test, which will use the bta to
 produce an annotated version for an example program, run LOGEN on it
 and the run the specialised program.
 (You need  to build Logen https://github.com/leuschel/logen and have the logen binary
-on the PATH. You should probably also set the LOGENDIR environment variable to
+on the PATH. You should probably also set the LOGEN_DIR environment variable to
 point to the root directory containing the logen sources and binary.)
 
 # Research
