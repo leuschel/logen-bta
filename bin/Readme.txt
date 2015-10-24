@@ -1,0 +1,1 @@
+The Makefile will put compiled versions of the BTA into this directory
