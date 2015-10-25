@@ -5,6 +5,7 @@ BTABIN=bin/bta
 BTASRC=${SICS} -l  cli_bta.pl --goal "go_cli,halt." --
 BTAs=${SICS} -l  cli_bta.pl --goal "go_cli,halt." -- -scc
 BTA=${BTABIN} -scc
+#.PHONY lambdaint_bti_bench
 
 $(BTABIN):  bin/bta.sav
 	${SPLD} --static --output $(BTABIN) --resources=./bin/bta.sav=/bta.sav
@@ -21,7 +22,23 @@ test: examples/re_matcher_bti.pl.ann
 	echo "Running specialised program: "
 	sicstus -l examples/re_matcher_spec.pl --goal "test3__0([a,b]), \+ test3__0([a,b,a]), halt."
 
+TESTS=examples/benchmarks
+ECCE=ecce_cli
+$(TESTS)/lambdaint_bti.pl.ann: $(TESTS)/lambdaint_bti.pl
+	${BTA} $(TESTS)/lambdaint_bti.pl -scc -o $(TESTS)/lambdaint_bti.pl.ann --entry "bench(d,d)." -scc
+$(TESTS)/lambdaint_bti_logen.pl: $(TESTS)/lambdaint_bti.pl.ann
+	${LOGEN} $(TESTS)/lambdaint_bti.pl "bench(22,25)" --spec_file $(TESTS)/lambdaint_bti_logen.pl -v
+$(TESTS)/lambdaint_bti_ecce.pl: $(TESTS)/lambdaint_bti.pl
+	${ECCE} $(TESTS)/lambdaint_bti.pl -pe "bench(X,Y)" -o $(TESTS)/lambdaint_bti_ecce.pl
+lambdaint_bti_bench: $(TESTS)/lambdaint_bti_logen.pl $(TESTS)/lambdaint_bti_ecce.pl
+	echo "ORIGINAL"
+	sicstus -l $(TESTS)/lambdaint_bti.pl --goal "bench(22,25),halt."
+	echo "LOGEN VERSION"
+	sicstus -l $(TESTS)/lambdaint_bti_logen.pl --goal "bench__0(22,25),halt."
+	echo "ECCE"
+	sicstus -l $(TESTS)/lambdaint_bti_ecce.pl --goal "bench(22,25),halt."
 
+bench: lambdaint_bti_bench
 clean:
 	-rm bin/bta*
 	#rm spldgen*.sav.o
