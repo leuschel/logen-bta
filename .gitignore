@@ -1,0 +1,6 @@
+*.po
+*.itf
+*.gx
+*.cpx
+examples/*/*_logen.pl
+examples/*/*_ecce.pl
