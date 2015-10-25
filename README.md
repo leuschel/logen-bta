@@ -31,3 +31,28 @@ In Proceedings WFLP'2009, LNCS 5979, Springer-Verlag, 2010.
 http://stups.hhu.de/w/Special:Publication/LeVi08_234
 Fast Offline Partial Evaluation for Large Logic Programs
 In Proceedings LOPSTR'08, volume 5438 of Lecture Notes in Computer Science, 2008.
+
+# Usage
+
+The generated binary (bin/bta) can be used as follows:
+
+bta [Options] PLFILE
+ Possible options:
+   --help: prints this message
+   --entry "GOAL.": use GOAL as entry point for bta
+                    GOAL = pred(a1,...,an) where ai = s,list_nv,list,nv or d
+   -o FILE: write annotated program into FILE
+   -sc: Allow semicall annotations
+   -su: Allow semiunfold annotations
+   -om: Allow online memo annotations
+   -mv: Monovariant Analysis (max. 1 filter decl. per predicate)
+   -ng: Do not try to ensure global termination
+   -nl: Do not try to ensure local termination
+   -ih: ignore $MEMOANN + $MEMOCALL hints
+   -ll: Allow List-Length norm
+   --scc: use scc preprocessing (--oneloop)
+   --time_out T:    max runtime per file (in ms)
+   -d FILE:    display dependency graph
+   -v, --verbose: print debugging messages
+   -vv: print even more debugging messages
+   --version: print version information
