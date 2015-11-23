@@ -1,3 +1,7 @@
+/* A Binding-Time for Logen */
+/* developed by Michael Leuschel and German Vidal */
+/* (c) Michael Leuschel and German Vidal 2007-2015 */
+
 :- module(size_change_analysis_without_labels_with_sccs,[size_change_analysis_without_labels/0,
                                 call_is_not_terminating/3,
                                 compute_global_binding_times_without_labels/4,
