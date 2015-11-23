@@ -3,9 +3,10 @@ A binding-time analysis (BTA) for the logen offline partial evaluator.
 
 Written by Michael Leuschel and German Vidal
 
+See also http://stups.hhu.de/w/Size-Change-BTA
 
 # Building
-To build you need SICStus Prolog Version 4.2.x
+To build you need SICStus Prolog Version 4.3.x
 
 Simply run
 
