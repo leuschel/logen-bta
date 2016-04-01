@@ -204,8 +204,7 @@ size_change_analysis_without_labels :-
       -> print_scc_graph_for_dot(F) ; true),
 
     (create_size_change_graphs -> vprintln('Created Size Change Graphs') 
-     ; 
-     (print('### Creating Size Change Graphs Failed !'),nl, fail)),
+     ;  print('### Creating Size Change Graphs Failed !'),nl, fail),
 
     %%trivial strategy: start from just one node of every SCC...
     (user:cli_option(use_sccs) -> assert_initial_nodes ; true),
@@ -340,6 +339,7 @@ meta_predicate(pp_cll(X),X). % PROB self-check meta-predicates
 meta_predicate(pp_mnf(X),X).
 meta_predicate(pp_cll(X),X).
 meta_predicate(mnf(X),X).
+meta_predicate(iso_body(X),X).
 
 peel_prolog_reader(PX,R) :- nonvar(PX),prolog_reader:X=PX,!,R=X.
 peel_prolog_reader(X,X).

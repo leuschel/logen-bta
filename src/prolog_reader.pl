@@ -37,6 +37,8 @@ get_clause_as_list(Head,ListBody) :-
 convert_to_list((A,B), [A| BRest]) :-
 	!,
 	convert_to_list(B,BRest).
+convert_to_list(iso_body(A), R) :- !, % no idea why this is generated
+     convert_to_list(A,R).
 convert_to_list(true, []).
 convert_to_list(A, [A]) :-
 	A \= true.
