@@ -197,7 +197,7 @@ remove_loops(_Pred).
 
 
 size_change_analysis_without_labels :-
-    print('Starting SIZE-CHANGE ANALYSIS'),nl,
+    print('Starting SIZE-CHANGE ANALYSIS (without labels)'),nl,
     create_sccs,
 
     (user:cli_option(dependency_graph2(F))
