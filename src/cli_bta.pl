@@ -68,6 +68,7 @@ recognise_option(Inputs,Flag,RemInputs) :-
    
 recognised_option(['--entry',Goal],entry(Goal)).
 recognised_option(['-e',N],entry(N)).
+recognised_option(['--lib',Goal],used_module(library(Goal))).
 recognised_option(['-v'],verbose).
 recognised_option(['--verbose'],verbose).
 recognised_option(['-vv'],very_verbose).
@@ -139,8 +140,7 @@ print_help :- format("Size Change BTA for LOGEN~n",[]),
 
 
 print_version :- 
-   format("Subversion Revision: $Rev: 1865 $~n",[]),
-   format("                     $LastChangedDate: 2012-08-20 14:48:42 +0200 (Mon, 20 Aug 2012) $~n",[]).
+   format("Logen-BTA Version from April 1st 2016~n",[]).
 
 create_size_change_graphs:-
     prolog_reader:get_clause(Call,Body,_Ref),

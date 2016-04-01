@@ -195,7 +195,11 @@ builtin_calls_answers(append,3,pure,[list,X,Y],[list,X,RY]) :- Y\=s, Y\=list_nv,
 builtin_calls_answers(member,2,pure,[s,s],[s,s]).
 builtin_calls_answers(member,2,pure,[s,list],[s,list]).
 builtin_calls_answers(empty_assoc,1,pure,[_],[s]).
+builtin_calls_answers(get_assoc,3,pure,[s,s,_],[s,s,s]).
+builtin_calls_answers(put_assoc,4,pure,[s,s,s,_],[s,s,s,s]).
 builtin_calls_answers(new_array,1,pure,[_],[s]).
+builtin_calls_answers(aref,3,pure,[s,s,_],[s,s,s]).
+builtin_calls_answers(aset,4,pure,[s,s,s,_],[s,s,s,s]).
 builtin_calls_answers(empty_avl,1,pure,[_],[s]).
 
 builtin_calls_answers(\=,2,sensitive,[s,s],[s,s]).
@@ -220,6 +224,7 @@ builtin_calls_answers('=..',2,pure,[list,X],[list,R]) :- X \= s, glb(X,list,R).
 builtin_calls_answers('=..',2,pure,[nv,X],[s,list]) :- X\=s.
 builtin_calls_answers('=..',2,pure,[d,list_nv],[nv,list_nv]).
 builtin_calls_answers('=..',2,pure,[d,list],[nv,list]).
+builtin_calls_answers(number,1,sensitive,[s],[s]).
 builtin_calls_answers(ground,1,sensitive,[s],[s]).
 builtin_calls_answers(nonvar,1,sensitive,[X],[X]) :- (X=s ; X=list_nv ; X=list ; X=nv).
 builtin_calls_answers(atom_concat,3,pure,[s,s,_],[s,s,s]).
@@ -297,6 +302,7 @@ analyze_single_file(File,Options) :-
     (member(output(F),Options) -> open(F,write,Stream) ; (F=Stream,Stream = user_output)),
     print(F),nl,
     assert(output_ann(Stream)),
+    print_imports,
     print_logen_filters,
     annotate,
     (member(output(F),Options) -> close(Stream) ; true),
@@ -313,6 +319,12 @@ my_size_change_analysis :- print('**************** SKIPPING SIZE-CHANGE ANALYSIS
 
 /* --------------------------------- */
 
+print_imports :- anl,
+   cli_option(used_module(M)),
+   aprint(' :- use_module('), aqprint(M), aprint(').'),anl,
+   fail.
+print_imports.
+   
 print_logen_filters :- anl,
    memo_entry(Fun,Arity,Pat),
    vprintln(memo_entry(Fun,Arity,Pat)),
