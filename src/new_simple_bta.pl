@@ -194,6 +194,8 @@ builtin_calls_answers(append,3,pure,[list,X,list_nv],[s,R,list_nv]) :- glb(X,lis
 builtin_calls_answers(append,3,pure,[list,X,Y],[list,X,RY]) :- Y\=s, Y\=list_nv, glb(Y,list,RY). /* a bit imprecise: improve */
 builtin_calls_answers(member,2,pure,[s,s],[s,s]).
 builtin_calls_answers(member,2,pure,[s,list],[s,list]).
+builtin_calls_answers(member,2,pure,[d,s],[s,s]).
+builtin_calls_answers(member,2,pure,[d,list_nv],[nv,list_nv]).
 builtin_calls_answers(empty_assoc,1,pure,[_],[s]).
 builtin_calls_answers(get_assoc,3,pure,[s,s,_],[s,s,s]).
 builtin_calls_answers(put_assoc,4,pure,[s,s,s,_],[s,s,s,s]).
