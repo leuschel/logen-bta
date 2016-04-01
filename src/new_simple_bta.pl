@@ -192,12 +192,12 @@ builtin_calls_answers(append,3,pure,[list_nv,list,Y],[list_nv,list,R]) :- glb(Y,
 builtin_calls_answers(append,3,pure,[list,_,s],[s,s,s]). 
 builtin_calls_answers(append,3,pure,[list,X,list_nv],[s,R,list_nv]) :- glb(X,list_nv,R). 
 builtin_calls_answers(append,3,pure,[list,X,Y],[list,X,RY]) :- Y\=s, Y\=list_nv, glb(Y,list,RY). /* a bit imprecise: improve */
+builtin_calls_answers(member,2,pure,[s,s],[s,s]).
+builtin_calls_answers(member,2,pure,[s,list],[s,list]).
+builtin_calls_answers(empty_assoc,1,pure,[_],[s]).
+builtin_calls_answers(new_array,1,pure,[_],[s]).
+builtin_calls_answers(empty_avl,1,pure,[_],[s]).
 
-  /* print is impure */
-builtin_calls_answers(call,1,side_effect,[X],[X]) :- fail.
-builtin_calls_answers(print,1,side_effect,[X],[X]) :- fail.
-builtin_calls_answers(write,1,side_effect,[X],[X]) :- fail.
-builtin_calls_answers(nl,0,side_effect,[],[]) :- fail.
 builtin_calls_answers(\=,2,sensitive,[s,s],[s,s]).
 builtin_calls_answers(\==,2,sensitive,[s,s],[s,s]).
 builtin_calls_answers(==,2,sensitive,[s,s],[s,s]).
@@ -228,20 +228,34 @@ builtin_calls_answers('=<',2,pure,[s,s],[s,s]).
 builtin_calls_answers('>',2,pure,[s,s],[s,s]).
 builtin_calls_answers('>=',2,pure,[s,s],[s,s]).
 
+  /* those built-ins that are never ever called by the PE */
+side_effect_builtin(call,_).
+side_effect_builtin(print,1).
+side_effect_builtin(write,1).
+side_effect_builtin(format,2).
+side_effect_builtin(nl,0).
+side_effect_builtin(throw,1).
+
 %sd_list([],0).
 %sd_list([H|T],X) :- X>0, X1 is X-1, (H=s ; H=d), sd_list(T,X1).
 
-is_built_in(call,1) :- !.
+is_built_in(call,N) :- N>0,!.
 is_built_in('<',2) :- !.
 is_built_in('=<',2) :- !.
 is_built_in('>',2) :- !.
 is_built_in('>=',2) :- !.
 is_built_in('=..',2) :- !.
+is_built_in('!',0) :- !.
+is_built_in(fail,0) :- !.
+is_built_in(true,0) :- !.
+is_built_in(F,A) :- side_effect_builtin(F,A),!.
 is_built_in(Fun,Arity) :- functor(C,Fun,Arity),
    (prolog_reader:is_user_pred(C) -> 
-     (builtin_calls_answers(Fun,Arity,_,_,_) -> print(redefined_builtin(Fun,Arity)),nl,fail
+     (builtin_calls_answers(Fun,Arity,_,_,_) -> nl,print(redefined_builtin(Fun,Arity)),nl,fail
         ; fail )
-     ; true).
+     ; builtin_calls_answers(Fun,Arity,_,_,_) -> true
+     ; otherwise -> nl, print(undefined_predicate_treating_like_built_in(Fun,Arity)),nl
+     ).
    %calls_answers(Fun,Arity,built_in,_,_).
 
 
@@ -427,11 +441,10 @@ ann_body(Call_,Path) :-
 	                ;  aq_print_logen(rescall,Call)
 	                )
 	            ;  (logen_call(Path) -> aq_print_logen(call,Call)
-	                 ; (print('/* INTERNAL ERROR: built-in neither call nor rescall: '),
+	                 ;  print('/* INTERNAL ERROR: built-in neither call nor rescall: '),
 	                    print(Call), print(' : '), print(Path), print(' ; assuming rescall */'),nl,
 	                    (verbose -> pp_table ; true),
 	                    aq_print_logen(rescall,Call)
-	                   )
 	               )
 	          )
 	     )
@@ -642,6 +655,7 @@ transparent(pp_cll(X),X,instantiate).  % PROB/ecce/... self-check meta-predicate
 transparent(pp_mnf(X),X,instantiate).
 transparent(pp_cll(X),X,instantiate).
 transparent(mnf(X),X,instantiate).
+transparent(iso_body(X),X,instantiate).
 
 % peel off prolog_reader module declaration
 peel_prolog_reader(PX,R) :- nonvar(PX),prolog_reader:X=PX,!,R=X.
