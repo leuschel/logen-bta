@@ -1,6 +1,6 @@
 /* A Binding-Time for Logen */
 /* developed by Michael Leuschel and German Vidal */
-/* (c) Michael Leuschel and German Vidal 2007-2015 */
+/* (c) Michael Leuschel and German Vidal 2007-2016 */
 
 /* --------------------------------- */
 /*    The Command Line Interface     */
@@ -140,7 +140,7 @@ print_help :- format("Size Change BTA for LOGEN~n",[]),
 
 
 print_version :- 
-   format("Logen-BTA Version from April 1st 2016~n",[]).
+   format("Logen-BTA Version from May 2016~n",[]).
 
 create_size_change_graphs:-
     prolog_reader:get_clause(Call,Body,_Ref),
