@@ -1,5 +1,5 @@
 % Module to read in Prolog files
-/* (c) Michael Leuschel and German Vidal 2007-2015 */
+/* (c) Michael Leuschel and German Vidal 2007-2016 */
 
 :- module(prolog_reader,
           [load_file/1, is_user_pred/1, is_built_in/1,
@@ -28,10 +28,20 @@ is_user_pred(P) :- current_predicate(_,P), predicate_property(P,dynamic).
 is_built_in(A) :- nonvar(A), \+(is_user_pred(A)).
 
 get_clause(Head,Body,Ref) :- is_user_pred(Head),
-	clause(Head,Body,Ref).
+	clause(Head,IBody,Ref),
+	strip_iso_guards(IBody,Body).
+
+% TO DO: do we need to look further ?
+strip_iso_guards(';'(ISO,B),Res) :-
+   iso_guard(ISO),!,
+   Res=B.
+strip_iso_guards(A,A).
+
+iso_guard(Body) :-
+   Body = (prolog:'$iso_clause_body_guard', iso_body(_)).
 	
 get_clause_as_list(Head,ListBody) :-
-	clause(Head,Body,_),
+	clause(Head,Body),
 	convert_to_list(Body,ListBody).
 
 convert_to_list((A,B), [A| BRest]) :-
