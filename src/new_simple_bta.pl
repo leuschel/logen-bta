@@ -173,6 +173,7 @@ generalise_memo_pattern(Pred,Arity,ActualPat,GeneralisedPat) :-
    impure: both side-effects and propagation sensitive */
 builtin_calls_answers(is,2,pure,[_,s],[s,s]).
 builtin_calls_answers(=,2,pure,[X,Y],[GLB,GLB]) :- glb(X,Y,GLB).
+builtin_calls_answers('=:=',2,pure,[s,s],[s,s]).
 builtin_calls_answers(length,2,pure,[s,_],[s,s]).
 builtin_calls_answers(length,2,pure,[list_nv,_],[list_nv,s]).
 builtin_calls_answers(length,2,pure,[list,_],[list,s]).
@@ -235,13 +236,17 @@ builtin_calls_answers('=<',2,pure,[s,s],[s,s]).
 builtin_calls_answers('>',2,pure,[s,s],[s,s]).
 builtin_calls_answers('>=',2,pure,[s,s],[s,s]).
 
+
   /* those built-ins that are never ever called by the PE */
 side_effect_builtin(call,_).
 side_effect_builtin(print,1).
 side_effect_builtin(write,1).
 side_effect_builtin(format,2).
+side_effect_builtin(format,3).
 side_effect_builtin(nl,0).
 side_effect_builtin(throw,1).
+side_effect_builtin(garbage_collect,0).
+side_effect_builtin(statistics,2).
 
 %sd_list([],0).
 %sd_list([H|T],X) :- X>0, X1 is X-1, (H=s ; H=d), sd_list(T,X1).
