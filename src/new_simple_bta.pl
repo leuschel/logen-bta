@@ -238,6 +238,7 @@ builtin_calls_answers('>=',2,pure,[s,s],[s,s]).
 
 
   /* those built-ins that are never ever called by the PE */
+side_effect_builtin(!,0).
 side_effect_builtin(call,_).
 side_effect_builtin(print,1).
 side_effect_builtin(write,1).
@@ -541,14 +542,14 @@ memoise_this_call(_Path,_Fun,_Arity,_CallPattern,Call) :- %println(memo_check(Ca
    \+ cli_option(ignorehints),
    prolog_reader:get_clause('$MEMOCALLS'(Call),Cond,_Ref),call(Cond).
 memoise_this_call(Path,_,_,_,_) :- contains_dangerous_construct(Path).
+memoise_this_call(_,Fun,Arity,_,_) :- side_effect_builtin(Fun,Arity).
 memoise_this_call(Path,_Fun,_Arity,_CallPattern,_Call) :-  \+ cli_option(no_local_termination), 
    \+ cli_option(allow_semi_unfold) , logen_memo(Path).  % we should memo: some other path requests it to be memoed (and we don't allow semi_unfold)
 memoise_this_call(_Path,Fun,Arity,CallPattern,_Call) :-  \+ cli_option(no_local_termination), 
    call_is_not_terminating(Fun,Arity,CallPattern). % we should memo if the call is potentially not terminating
 
-contains_dangerous_construct(not(_)).
+contains_dangerous_construct(not(_)) :- !.
 contains_dangerous_construct(X) :- nonvar(X),X=..[_,A], contains_dangerous_construct(A).
-
 
 %memo_program_point/4 and memo_program_point2/4: original versions
 memo_program_point(Path,Fun,Arity,CallPattern) :-
