@@ -327,8 +327,12 @@ my_size_change_analysis :- print('**************** SKIPPING SIZE-CHANGE ANALYSIS
 
 /* --------------------------------- */
 
+needs_module(M) :- cli_option(used_module(M)).
+needs_module(M) :- 
+  prolog_reader:get_clause('$USE_MODULE'(M),true,_Ref).
+
 print_imports :- anl,
-   cli_option(used_module(M)),
+   needs_module(M),
    aprint(' :- use_module('), aqprint(M), aprint(').'),anl,
    fail.
 print_imports.
