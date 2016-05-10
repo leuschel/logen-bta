@@ -9,17 +9,18 @@
 
 
 load_file(File) :-
-    (File=argv(_) -> (print('% ### Please supply filename as argument'),nl,fail)
+    (File=argv(_) -> print('% ### Please supply filename as argument'),nl,fail
                   ;  true),
 	prolog_flag(single_var_warnings, Old, off),
 	prolog_flag(redefine_warnings,OldR,off),
 	
-    on_exception(Exc, load_files(File,[compilation_mode(assert_all)]),
+    on_exception(Exc, load_files(File,[load_type(source),
+                                       compilation_mode(assert_all)]),
                   (nl,print('### Exception occured:'),print(Exc),nl,
                    print('### Cannot load file: '), print(File),nl,
                   fail)),
     
-    %print('% loaded file: '),print(File),nl,
+     print('% loaded file: '),print(File),nl,
 	set_prolog_flag(single_var_warnings, Old),
 	set_prolog_flag(redefine_warnings, OldR).
 	
