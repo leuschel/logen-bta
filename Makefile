@@ -38,6 +38,15 @@ lambdaint_bti_bench: $(TESTS)/lambdaint_bti_logen.pl $(TESTS)/lambdaint_bti_ecce
 	echo "ECCE"
 	sicstus -l $(TESTS)/lambdaint_bti_ecce.pl --goal "bench(22,25),halt."
 
+testif: examples/if_simple_spec.pl
+	sicstus -l examples/if_simple_spec.pl --goal "test__0(X),print(X),nl,X==a,halt."
+examples/if_simple_spec.pl: $(BTABIN) examples/if_simple.pl.ann
+	echo "Running LOGEN: "
+	${LOGEN} examples/if_simple.pl "test(X)" -ap --spec_file examples/if_simple_spec.pl -v
+examples/if_simple.pl.ann: $(BTABIN) examples/if_simple.pl
+	echo "Running BTA: "
+	${BTA} examples/if_simple.pl -o examples/if_simple.pl.ann --entry "test(d)."
+
 bench: lambdaint_bti_bench
 clean:
 	-rm bin/bta*

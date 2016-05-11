@@ -428,6 +428,11 @@ ann_body(resdisj(A,B),Path) :- !,
         aprint('resdisj('),
 	ann_body(A,resdisj1(Path)), aprint(', '),
 	ann_body(B,resdisj2(Path)), aprint(') ').
+ann_body((A->B),Path) :- !, 
+    /* this corresponds to a static_local_cut ; */
+	aprint('( '),
+	ann_body(A,lcut1(Path)), aprint(' -> '),
+	ann_body(B,lcut2(Path)), aprint(') ').
 ann_body((A;B),Path) :- !, 
     /* this corresponds to a static_or ; */
 	aprint('( '),
@@ -487,14 +492,17 @@ check_body(true,In,In,_Path) :- !.
 check_body(Module:(A,B),StaticVars,OutSV2,Path) :- !,  check_body((Module:A,Module:B),StaticVars,OutSV2,Path).
 check_body((A,B),StaticVars,OutSV2,Path) :- !, 
   %  print_bt_message(conj1(A)),
-	check_body(A,StaticVars,OutSV,and1(Path)),
+	check_body(A,StaticVars,OutSV1,and1(Path)),
   %  print_bt_message(conj2(B)),
-	check_body(B,OutSV,OutSV2,and2(Path)).
+	check_body(B,OutSV1,OutSV2,and2(Path)).
 check_body(resdisj(A,B),StaticVars,OutSV,Path) :- !, 
     /* this corresponds to a residual_disj ? */
 	check_body(A,StaticVars,OutSV1,resdisj1(Path)),
 	check_body(B,StaticVars,OutSV2,resdisj2(Path)),
 	exact_inter(OutSV1,OutSV2,OutSV).
+check_body((A->B),StaticVars,OutSV,Path) :- !, 
+    check_body(A,StaticVars,OutSV1,lcut1(Path)), % TO DO ?: check that we can fully eval A
+    check_body(B,OutSV1,OutSV,lcut2(Path)).
 check_body((A;B),StaticVars,OutSV,Path) :- !, 
     /* this corresponds to a static_or ; */
   ( %print_bt_message(disj_left),
@@ -665,6 +673,8 @@ get_path_clause('and1'(X),H,B) :-  !, get_path_clause(X,H,B).
 get_path_clause('and2'(X),H,B) :-  !, get_path_clause(X,H,B).
 get_path_clause('disj1'(X),H,B) :-  !, get_path_clause(X,H,B).
 get_path_clause('disj2'(X),H,B) :-  !, get_path_clause(X,H,B).
+get_path_clause('lcut1'(X),H,B) :-  !, get_path_clause(X,H,B).
+get_path_clause('lcut2'(X),H,B) :-  !, get_path_clause(X,H,B).
 get_path_clause('resdisj1'(X),H,B) :-  !, get_path_clause(X,H,B).
 get_path_clause('resdisj2'(X),H,B) :-  !, get_path_clause(X,H,B).
 get_path_clause('memo'(X),H,B) :-  !, get_path_clause(X,H,B).
@@ -674,7 +684,7 @@ get_path_clause(X,H,B) :- X =..[_,Y], !, get_path_clause(Y,H,B).
 transparent(when(_,X),X,instantiate).
 transparent(findall(_,PX,_),X,no) :- peel_prolog_reader(PX,X).
 transparent(\+(X),X,no).
-transparent('->'(X,Y),(X,Y),instantiate).
+%transparent('->'(X,Y),(X,Y),instantiate).
 transparent(pp_cll(X),X,instantiate).  % PROB/ecce/... self-check meta-predicates
 transparent(pp_mnf(X),X,instantiate).
 transparent(pp_cll(X),X,instantiate).
