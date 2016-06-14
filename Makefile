@@ -47,6 +47,23 @@ examples/if_simple.pl.ann: $(BTABIN) examples/if_simple.pl
 	echo "Running BTA: "
 	${BTA} examples/if_simple.pl -o examples/if_simple.pl.ann --entry "test(d)."
 
+
+examples/imp_int_spec.pl: $(BTABIN) examples/imp_int.pl.ann
+	echo "Running LOGEN: "
+	${LOGEN} examples/imp_int.pl "test2(X,R)" -ap --spec_file examples/imp_int_spec.pl -v
+	cat examples/imp_int_spec.pl
+examples/imp_int.pl.ann: $(BTABIN) examples/imp_int.pl
+	echo "Running BTA: "
+	${BTA} examples/imp_int.pl -o examples/imp_int.pl.ann --entry "test2(d,d)."
+examples/imp_int_bti_spec.pl: $(BTABIN) examples/imp_int_bti.pl.ann
+	echo "Running LOGEN: "
+	${LOGEN} examples/imp_int_bti.pl "test2(X,R1,R2)" -ap --spec_file examples/imp_int_bti_spec.pl -v
+	cat examples/imp_int_bti_spec.pl
+examples/imp_int_bti.pl.ann: $(BTABIN) examples/imp_int_bti.pl
+	echo "Running BTA: "
+	${BTA} examples/imp_int_bti.pl -o examples/imp_int_bti.pl.ann --entry "test2(d,d,d)."
+	
+
 bench: lambdaint_bti_bench
 clean:
 	-rm bin/bta*
