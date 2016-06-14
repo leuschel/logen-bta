@@ -809,7 +809,7 @@ nv_list_els(X,R) :- var(X),!,R=[].
 nv_list_els([],[]).
 nv_list_els([H|T],Res) :-
      (nonvar(H) -> nv_list_els(T,Res)
-                 ; (Res=[H|R],nv_list_els(T,R))).
+                 ; Res=[H|R],nv_list_els(T,R)).
 
 :- use_module(library(terms)).
 
@@ -853,7 +853,7 @@ l_insert([V|T],In,Out) :- insert(In,V,In2),
   l_insert(T,In2,Out).
 
 insert([],X,[X]).
-insert([H|T],X,R) :- (H==X -> R=[H|T] ; (R=[H|R2],insert(T,X,R2))).
+insert([H|T],X,R) :- (H==X -> R=[H|T] ; R=[H|R2],insert(T,X,R2)).
 
 exact_subset([],_).
 exact_subset([H|T],L) :- exact_del(H,L,L2), exact_subset(T,L2).
@@ -876,7 +876,7 @@ exact_subset_of_three([H|T],L1,L2,L3) :-
 exact_subset_of_four(X,L1,L2,L3,L4) :- append(L3,L4,L34), /* to be improved */ exact_subset_of_three(X,L1,L2,L34).
    
 exact_del(X,[Y|T],R) :-
-   ((X==Y) -> R=T ; (R=[Y|R2],exact_del(X,T,R2))).
+   (X==Y -> R=T ; R=[Y|R2],exact_del(X,T,R2)).
 
 
 exact_inter([],_R,[]).
