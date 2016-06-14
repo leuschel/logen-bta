@@ -4,3 +4,10 @@
 *.cpx
 examples/*/*_logen.pl
 examples/*/*_ecce.pl
+examples/re_matcher_bti.pl.ann
+examples/imp_int.pl.ann
+examples/imp_int_spec.pl
+examples/imp_int_bti.pl.ann
+examples/imp_int_bti_spec.pl
+examples/if_simple.pl.ann
+examples/if_simple_spec.pl
