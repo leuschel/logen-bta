@@ -228,6 +228,8 @@ builtin_calls_answers('=..',2,pure,[nv,X],[s,list]) :- X\=s.
 builtin_calls_answers('=..',2,pure,[d,list_nv],[nv,list_nv]).
 builtin_calls_answers('=..',2,pure,[d,list],[nv,list]).
 builtin_calls_answers(number,1,sensitive,[s],[s]).
+builtin_calls_answers(atom,1,sensitive,[s],[s]).
+builtin_calls_answers(atomic,1,sensitive,[s],[s]).
 builtin_calls_answers(ground,1,sensitive,[s],[s]).
 builtin_calls_answers(nonvar,1,sensitive,[X],[X]) :- (X=s ; X=list_nv ; X=list ; X=nv).
 builtin_calls_answers(atom_concat,3,pure,[s,s,_],[s,s,s]).
