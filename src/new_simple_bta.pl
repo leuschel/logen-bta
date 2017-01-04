@@ -362,6 +362,9 @@ convert_pat([list_nv|T],[(static ; type(list(nonvar)))|FT]) :- convert_pat(T,FT)
 
 debug_this_call(X) :- nonvar(X), X = eval(Y,_,_), nonvar(Y), Y=apply(_,_).
 
+is_failing_clause_body(V) :- var(V),!,fail.
+is_failing_clause_body((_A,B)) :- is_failing_clause_body(B).
+is_failing_clause_body(fail).
 
 /* The main loop of the analysis */
 bta_analyze :- (verbose -> pp ; true),
@@ -384,6 +387,7 @@ bta_analyze :- (verbose -> pp ; true),
    (Body=true -> OutSV=InEnv
               ; check_body(Body,InEnv,OutSV,Ref)
    ),
+   %\+ is_failing_clause_body(Body), % no need to propagate new answers IF fail is marked call !! TO DO: enable this
    vvprintln(exit_pattern(Call,static_vars(OutSV))),
  %  (debug_this_call(Call) -> println(exit_pattern(Call,InEnv)) ; true),
    /* check that answer is ok */
@@ -491,7 +495,8 @@ strip(R,R).
 
 /* check_body(BodyOfClause,ListofStaticVars,ListofStaticVarsAfterExecutingBody) */
 check_body(true,In,In,_Path) :- !.
-check_body(Module:(A,B),StaticVars,OutSV2,Path) :- !,  check_body((Module:A,Module:B),StaticVars,OutSV2,Path).
+check_body(Module:(A,B),StaticVars,OutSV2,Path) :- !,
+    check_body((Module:A,Module:B),StaticVars,OutSV2,Path).
 check_body((A,B),StaticVars,OutSV2,Path) :- !, 
   %  print_bt_message(conj1(A)),
 	check_body(A,StaticVars,OutSV1,and1(Path)),
@@ -535,8 +540,9 @@ check_body('$UNFOLD'(Call_),InSV,OutSV,Path) :- !,  /* USER PROVIDED ANNOTATION 
 	functor(Call,Fun,Arity),
     get_abstract_pattern(Call,CallPattern,InSV),
     check_unfold_call(Call,CallPattern,Fun,Arity,InSV,OutSV,Path).
+% TO DO: treat fail and make every variable static ?!
 check_body(Call_,InSV,OutSV,Path) :-
-   Call_ = Call,
+    Call_ = Call,
     functor(Call,Fun,Arity),
     get_abstract_pattern(Call,CallPattern,InSV),
     %println(is_not_terminating(Fun,Arity,CallPattern)),
