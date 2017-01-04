@@ -11,3 +11,4 @@ examples/imp_int_bti.pl.ann
 examples/imp_int_bti_spec.pl
 examples/if_simple.pl.ann
 examples/if_simple_spec.pl
+/examples/imp_int_taint_spec.pl
