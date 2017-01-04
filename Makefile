@@ -62,8 +62,16 @@ examples/imp_int_bti_spec.pl: $(BTABIN) examples/imp_int_bti.pl.ann
 examples/imp_int_bti.pl.ann: $(BTABIN) examples/imp_int_bti.pl
 	echo "Running BTA: "
 	${BTA} examples/imp_int_bti.pl -o examples/imp_int_bti.pl.ann --entry "test2(d,d,d)."
-	
 
+examples/imp_int_taint_spec.pl: $(BTABIN) examples/imp_int_taint.pl.ann
+	echo "Running LOGEN: "
+	${LOGEN} examples/imp_int_taint.pl "test2(X,R1,R2)" -ap --spec_file examples/imp_int_taint_spec.pl -v
+	cat examples/imp_int_taint_spec.pl
+examples/imp_int_taint.pl.ann: $(BTABIN) examples/imp_int_taint.pl Makefile
+	echo "Running BTA: "
+	${BTA} -ng examples/imp_int_taint.pl -o examples/imp_int_taint.pl.ann --entry "test2(d,d,d)."
+
+taint: examples/imp_int_taint_spec.pl
 bench: lambdaint_bti_bench
 clean:
 	-rm bin/bta*
